@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/DSFRONTEND/static/css/main.911aea22.css",
+    "main.js": "/DSFRONTEND/static/js/main.21083720.js",
+    "static/js/787.c4f40e06.chunk.js": "/DSFRONTEND/static/js/787.c4f40e06.chunk.js",
+    "index.html": "/DSFRONTEND/index.html",
+    "main.911aea22.css.map": "/DSFRONTEND/static/css/main.911aea22.css.map",
+    "main.21083720.js.map": "/DSFRONTEND/static/js/main.21083720.js.map",
+    "787.c4f40e06.chunk.js.map": "/DSFRONTEND/static/js/787.c4f40e06.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.911aea22.css",
+    "static/js/main.21083720.js"
+  ]
+}
