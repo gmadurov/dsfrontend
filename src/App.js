@@ -1,23 +1,25 @@
 import "./App.css";
-import NavBar from "./components/NavBar";
+import NavBar from "./pages/NavBar";
 import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { default as EventsBrowser } from "./components/browser/Events/Events";
-import { default as EventFormBrowser } from "./components/browser/Events/EventForm";
-import { default as EventsMobile } from "./components/mobile/Events/Events";
-import { default as EventFormMobile } from "./components/mobile/Events/EventForm";
-import Test from "./components/Test";
-import { default as DsaniBrowser } from "./components/browser/Dsani/Dsani";
-import { default as DsaniMobile } from "./components/mobile/Dsani/Dsani";
-import Footer from "./components/Footer";
+import { default as EventsBrowser } from "./pages/browser/Events/Events";
+import { default as EventFormBrowser } from "./pages/browser/Events/EventForm";
+import { default as EventsMobile } from "./pages/mobile/Events/Events";
+import { default as EventFormMobile } from "./pages/mobile/Events/EventForm";
+import Test from "./pages/Test";
+import { default as DsaniBrowser } from "./pages/browser/Dsani/Dsani";
+import { default as DsaniMobile } from "./pages/mobile/Dsani/Dsani";
+import Footer from "./pages/Footer";
 import PrivacyPolicy from "./PrivacyPolicy";
-// import Home from "./components/pages/Home";
+// import Home from "./pages/pages/Home";
 import { BrowserView, MobileView } from "react-device-detect";
-import { default as DeclaFormMobile } from "./components/mobile/Finance/DeclaForm";
-import { default as DeclaFormBrowser } from "./components/browser/Finance/DeclaForm";
-import Page from "./components/Page";
-import Declas from "./components/browser/Finance/Declas";
-
+import { default as DeclaFormMobile } from "./pages/mobile/Finance/DeclaForm";
+import { default as DeclaFormBrowser } from "./pages/browser/Finance/DeclaForm";
+import Page from "./pages/Page";
+import Declas from "./pages/browser/Finance/Declas";
+import PrivateRoute from "./utils/PrivateRoute";
+import LoginPage from "./pages/Login";
+import { FullProvider } from "./context/FullContext";
 function App() {
   const [API_URL, setAPIURL] = useState("http://127.0.0.1:8000");
   const [leden, setLeden] = useState([]);
@@ -25,19 +27,25 @@ function App() {
   // let API_URL;
   // API_URL = "https://stropdas2.herokuapp.com";
   // API_URL = "http://127.0.0.1:8000";
-  useEffect(() => {
-    const getLeden = async () => {
-      const res = await fetch(API_URL + "/api/leden/");
-      const data = await res.json();
-      setLeden(data);
-    };
-    getLeden();
-    EventState.GET();
-    DeclaState.GET();
-    BoekstukState.GET();
-    // eslint-disable-next-line
-  }, [API_URL]);
-
+  // useEffect(() => {
+  //   const getLeden = async () => {
+  //     const res = await fetch(API_URL + "/api/leden/", {
+  //       method: "GET",
+  //       headers: {
+  //         "Content-type": "application-json",
+  //         Authorization:
+  //           "Authentication eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjU2NjIxMzkzLCJpYXQiOjE2NTY2MTg1MjUsImp0aSI6IjE3ZTQ2NzNlOWY1NzQ2NTVhNDQ5Mjc5NjUwMDkyNzM0IiwidXNlcl9pZCI6NTYsIm5hbWUiOiJHdXN0YXZvIE1hZHVybyIsInJvbGUiOlsiRmlzY3VzIiwiRGV2ZWxvcGVyIiwiU2VuYXRlIl19.XuMB_rN527mzyrgKFNJxTfx4CuJ5YgleteiKjQ93eb0",
+  //       },
+  //     });
+  //     const data = await res.json();
+  //     setLeden(data);
+  //   };
+  //   getLeden();
+  //   EventState.GET();
+  //   // DeclaState.GET();
+  //   BoekstukState.GET();
+  //   // eslint-disable-next-line
+  // }, [API_URL]);
   const [events, setEvents] = useState([]);
   class EventState {
     constructor(event) {
@@ -234,182 +242,209 @@ function App() {
   }
   return (
     <Router>
-      <div className="cointainer">
-        <NavBar setapi={setAPIURL} />
-        <BrowserView>
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <>
-                  <EventsBrowser leden={leden} eventState={EventState} />
-                </>
-              }
-            />
-            <Route
-              path="/agenda"
-              element={
-                <>
-                  <EventsBrowser leden={leden} eventState={EventState} />
-                </>
-              }
-            />
-            <Route
-              path="/dsani"
-              element={
-                <DsaniBrowser
-                  allEvents={EventState.events}
-                  dsaniState={DsaniState}
-                  leden={leden}
-                />
-              }
-            />
-            <Route
-              path="/addevent"
-              element={<EventFormBrowser eventState={EventState} />}
-            />
-            <Route
-              path="/decla"
-              element={
-                <Page
-                  element={
-                    <>
+      <div className="cointainer  is-max-desktop has-text-centered">
+        <FullProvider>
+          <NavBar setapi={setAPIURL} />
+          <BrowserView>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <PrivateRoute>
+                    <EventsBrowser leden={leden} eventState={EventState} />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/agenda"
+                element={
+                  <PrivateRoute>
+                    <EventsBrowser leden={leden} eventState={EventState} />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/dsani"
+                element={
+                  <PrivateRoute>
+                    <DsaniBrowser
+                      allEvents={EventState.events}
+                      dsaniState={DsaniState}
+                      leden={leden}
+                    />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/addevent"
+                element={
+                  <PrivateRoute>
+                    <EventFormBrowser eventState={EventState} />
+                  </PrivateRoute>
+                }
+              />
+
+              <Route
+                path="/declas"
+                element={
+                  <PrivateRoute>
+                    <Declas
+                    // leden={leden}
+                    // eventState={EventState}
+                    // declaState={DeclaState}
+                    // boekstukState={BoekstukState}
+                    />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/decla"
+                element={
+                  <PrivateRoute>
+                    <Page>
+                      <DeclaFormBrowser
+                        // leden={leden}
+                        eventState={EventState}
+                        // declaState={DeclaState}
+                        boekstukState={BoekstukState}
+                      />
+                    </Page>
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/decla/:id"
+                element={
+                  <PrivateRoute>
+                    <Page>
                       <DeclaFormBrowser
                         leden={leden}
                         eventState={EventState}
                         declaState={DeclaState}
                         boekstukState={BoekstukState}
                       />
-                    </>
-                  }
-                />
-              }
-            />
-            <Route
-              path="/decla/:id"
-              element={
-                <Page
-                  element={
-                    <>
-                      <DeclaFormBrowser
-                        leden={leden}
-                        eventState={EventState}
-                        declaState={DeclaState}
-                        boekstukState={BoekstukState}
-                      />
-                    </>
-                  }
-                />
-              }
-            />
-            <Route
-              path="/declas"
-              element={
-                <Declas
-                  leden={leden}
-                  eventState={EventState}
-                  declaState={DeclaState}
-                  boekstukState={BoekstukState}
-                />
-              }
-            />
-            <Route path="/test" element={<Test />} />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-          </Routes>
-        </BrowserView>
-        <MobileView>
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <>
-                  <EventsMobile
-                    leden={leden}
-                    allEvents={EventState.events}
-                    eventState={EventState}
-                  />
-                </>
-              }
-            />
-            <Route
-              path="/agenda"
-              element={
-                <>
-                  <EventsMobile
-                    leden={leden}
-                    allEvents={EventState.events}
-                    eventState={EventState}
-                  />
-                </>
-              }
-            />
-            <Route
-              path="/dsani"
-              element={
-                <DsaniMobile
-                  allEvents={EventState.events}
-                  dsaniState={DsaniState}
-                  leden={leden}
-                />
-              }
-            />
-            <Route
-              path="/addevent"
-              element={<EventFormMobile eventState={EventState} />}
-            />
-            {/* <Route path="/event" element={<Event event={events[0]} onAdd={addEvent} onEdit={toggleEvent} onDelete={deleteEvent}/>}/> */}
-            <Route
-              path="/decla"
-              element={
-                <DeclaFormMobile
-                  leden={leden}
-                  allEvents={EventState.events}
-                  onEdit={DeclaState}
-                />
-              }
-            />
-            <Route
-              path="/test"
-              element={
-                <Test
-                  leden={leden}
-                  allEvents={EventState.events}
-                  onEdit={DeclaState}
-                />
-              }
-            />
-            <Route
-              path="/decla/:id"
-              element={
-                <Page
-                  element={
-                    <>
+                    </Page>
+                  </PrivateRoute>
+                }
+              />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/test" element={<Test />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route
+                path="*"
+                element={
+                  <Page>
+                    <h3> 404: unvalid url</h3>
+                  </Page>
+                }
+              />
+            </Routes>
+          </BrowserView>
+          <MobileView>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <PrivateRoute>
+                    <EventsMobile
+                      leden={leden}
+                      allEvents={EventState.events}
+                      eventState={EventState}
+                    />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/agenda"
+                element={
+                  <PrivateRoute>
+                    <EventsMobile
+                      leden={leden}
+                      allEvents={EventState.events}
+                      eventState={EventState}
+                    />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/dsani"
+                element={
+                  <PrivateRoute>
+                    <DsaniMobile
+                      allEvents={EventState.events}
+                      dsaniState={DsaniState}
+                      leden={leden}
+                    />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/addevent"
+                element={
+                  <PrivateRoute>
+                    <EventFormMobile eventState={EventState} />
+                  </PrivateRoute>
+                }
+              />
+              {/* <Route path="/event" ><Event event={events[0]} onAdd={addEvent} onEdit={toggleEvent} onDelete={deleteEvent}/>}/> */}
+              <Route
+                path="/decla"
+                element={
+                  <PrivateRoute>
+                    <DeclaFormMobile
+                      leden={leden}
+                      allEvents={EventState.events}
+                      onEdit={DeclaState}
+                    />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/test"
+                element={
+                  <PrivateRoute>
+                    <Test
+                      leden={leden}
+                      allEvents={EventState.events}
+                      onEdit={DeclaState}
+                    />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/decla/:id"
+                element={
+                  <PrivateRoute>
+                    <Page>
                       <DeclaFormMobile
                         leden={leden}
                         eventState={EventState}
                         declaState={DeclaState}
                         boekstukState={BoekstukState}
                       />
-                    </>
-                  }
-                />
-              }
-            />
-            <Route
-              path="/declas"
-              element={
-                <Declas
-                  leden={leden}
-                  eventState={EventState}
-                  declaState={DeclaState}
-                  boekstukState={BoekstukState}
-                />
-              }
-            />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-          </Routes>
-        </MobileView>
-        <Footer />
+                    </Page>
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/declas"
+                element={
+                  <PrivateRoute>
+                    <Declas
+                      leden={leden}
+                      eventState={EventState}
+                      declaState={DeclaState}
+                      boekstukState={BoekstukState}
+                    />
+                  </PrivateRoute>
+                }
+              />
+
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+            </Routes>
+          </MobileView>
+          <Footer />
+        </FullProvider>
       </div>
     </Router>
   );
