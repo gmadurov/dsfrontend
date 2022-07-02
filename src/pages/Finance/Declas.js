@@ -1,16 +1,22 @@
 import { useContext, useEffect, useState } from "react";
-import DeclaContext from "../../../context/DeclaContext";
-import LedenContext from "../../../context/LedenContext";
+import DeclaContext from "../../context/DeclaContext";
+import LedenContext from "../../context/LedenContext";
 import Decla from "./Decla";
+import AuthContext from "../../context/AuthContext";
 
-export const Declas = ({ boekstukState, eventState }) => {
+/**
+ *  test docstring
+ */
+export const Declas = () => {
+  const { user } = useContext(AuthContext);
   const { leden } = useContext(LedenContext);
-  let { declas, GET } = useContext(DeclaContext);
+  let { declas, GET, boekstuks } = useContext(DeclaContext);
   useEffect(() => {
     const get = async () => {
       await GET();
     };
     get();
+    // eslint-disable-next-line
   }, []);
 
   const [search, setSearch] = useState("");
@@ -20,8 +26,7 @@ export const Declas = ({ boekstukState, eventState }) => {
         ?.find((lid) => lid.id === decla.owner)
         ?.initials.toLowerCase()
         .includes(search.toLowerCase()) |
-      boekstukState
-        ?.objects()
+      boekstuks
         .find((bs) => bs.id === decla.boekstuk)
         ?.name.toLowerCase()
         .includes(search.toLowerCase()) |
@@ -65,18 +70,13 @@ export const Declas = ({ boekstukState, eventState }) => {
                   <th>Boekstuk</th>
                   <th>Ficus Comment</th>
                   <th>Total</th>
-                  <th>Verwerkt</th>
+                  {user.roles.includes("Fiscus") && <th>Verwerkt</th>}
                   <th>Actie</th>
                 </tr>
               </thead>
               <tbody>
                 {declas?.map((decla) => (
-                  <Decla
-                    key={"decla" + decla.id}
-                    decla={decla}
-                    eventState={eventState}
-                    boekstukState={boekstukState}
-                  />
+                  <Decla key={"decla" + decla.id} decla={decla} />
                 ))}
               </tbody>
             </table>

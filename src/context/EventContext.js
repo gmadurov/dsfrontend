@@ -1,12 +1,20 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import ApiContext from "./ApiContext";
+/** events: events,
+ * 
+    setEvents: setEvents,
 
+    POST: POST,
+
+    PUT: PUT,
+
+    DELETE: DELETE, */
 const EventContext = createContext();
 export default EventContext;
 
 export const EventProvider = ({ children }) => {
   const [events, setEvents] = useState([]);
-  const { ApiRequest } = useContext(ApiContext);
+  const { user, ApiRequest } = useContext(ApiContext);
 
   const GET = async () => {
     setEvents([]);
@@ -14,7 +22,7 @@ export const EventProvider = ({ children }) => {
     if (res.status === 200) {
       setEvents(data);
     } else {
-      alert("error getting Events");
+      console.log("error getting Events");
     }
   };
   async function POST(event) {
@@ -26,7 +34,7 @@ export const EventProvider = ({ children }) => {
     if (res.status === 200) {
       setEvents([...events, data]);
     } else {
-      alert("Problem creating event");
+      console.log("Problem creating event");
     }
   }
   async function PUT(event) {
@@ -44,7 +52,7 @@ export const EventProvider = ({ children }) => {
         )
       );
     } else {
-      alert("Problem changing event");
+      console.log("Problem changing event");
     }
   }
   async function DELETE(event) {
@@ -55,7 +63,7 @@ export const EventProvider = ({ children }) => {
       },
     });
     if (res.status !== 200) {
-      alert("Event Deleted");
+      console.log("Event Deleted");
     }
   }
 
@@ -63,11 +71,15 @@ export const EventProvider = ({ children }) => {
     async function lambda() {
       GET();
     }
-    lambda();
-  }, []);
+    if (user) {
+      lambda();
+    }
+    // eslint-disable-next-line
+  }, [user]);
 
   const data = {
     events: events,
+    setEvents: setEvents,
     POST: POST,
     PUT: PUT,
     DELETE: DELETE,

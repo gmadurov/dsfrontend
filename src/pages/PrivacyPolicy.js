@@ -8,10 +8,10 @@ export const PrivacyPolicy = () => {
               <h1>Privacy Policy for Dispuut Stropdas</h1>
               <p>
                 At Dispuut Stropdas, accessible from
-                http://stropdas2.herokuapp.com or http://stropdas.herokuapp.com, one of our main priorities is the
-                privacy of our visitors. This PrivacyPolicy document contains
-                types of information that is collected andrecorded by Dispuut
-                Stropdas and how we use it.
+                http://stropdas2.herokuapp.com or http://stropdas.herokuapp.com,
+                one of our main priorities is the privacy of our visitors. This
+                PrivacyPolicy document contains types of information that is
+                collected andrecorded by Dispuut Stropdas and how we use it.
               </p>
               <p>
                 If you have additional questions or require more information

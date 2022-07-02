@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import Button from "../../../components/Button";
-// import Page from "../Page";
-// import App from '../../App'
+import React, { useContext, useState } from "react";
+import Button from "../../components/Button";
 import Select from "react-select";
 import CreatableSelect from "react-select/creatable";
+import LedenContext from "../../context/LedenContext";
+import EventContext from "../../context/EventContext";
 
-const EventForm = ({ leden, id, event, eventState }) => {
-  // let method = event ? "PUT" : "POST";
-
+const EventForm = ({ id, event }) => {
+  const { leden } = useContext(LedenContext);
+  const { POST, PUT, DELETE } = useContext(EventContext);
   const [deleted, setDeleted] = useState(false);
   const [summary, setSummary] = useState(event ? event.summary : "Activiteit");
   const [description, setDescription] = useState(
@@ -33,15 +33,13 @@ const EventForm = ({ leden, id, event, eventState }) => {
     event ? event.bijzonderheden : "Op Afmelding"
   );
   const onSubmit = (e) => {
-    // console.log("id =", event.id, key);
-
     e.preventDefault();
     if (!summary) {
       alert("Prease add summary");
       return;
     }
     if (deleted | !event) {
-      new eventState({
+      POST({
         summary,
         description,
         start_date,
@@ -55,9 +53,9 @@ const EventForm = ({ leden, id, event, eventState }) => {
         info,
         budget,
         bijzonderheden,
-      }).POST();
+      });
     } else {
-      new eventState({
+      PUT({
         id,
         summary,
         description,
@@ -72,7 +70,7 @@ const EventForm = ({ leden, id, event, eventState }) => {
         info,
         budget,
         bijzonderheden,
-      }).PUT();
+      });
     }
     setDeleted(false);
     setSummary(summary ? summary : "");
@@ -90,7 +88,8 @@ const EventForm = ({ leden, id, event, eventState }) => {
     setBijzonderheden(bijzonderheden ? bijzonderheden : "");
   };
   const Delete = (e) => {
-    new eventState({
+    e.preventDefault()
+    DELETE({
       id,
       summary,
       description,
@@ -105,7 +104,7 @@ const EventForm = ({ leden, id, event, eventState }) => {
       info,
       budget,
       bijzonderheden,
-    }).DELETE();
+    });
     setDeleted(!deleted);
     setSummary(summary ? summary : "");
     setDescription(description ? description : "");
@@ -123,7 +122,7 @@ const EventForm = ({ leden, id, event, eventState }) => {
   };
 
   const optionsKokers = leden?.map((lid) => ({
-    value: lid.id,
+    value: lid?.id,
     label: lid?.initials,
   }));
   const optionsSummary = [
@@ -135,8 +134,8 @@ const EventForm = ({ leden, id, event, eventState }) => {
     { value: "Dispuutsverjaardag", label: "Dispuutsverjaardag" },
   ];
   return (
-    <div className="column is-8">
-      <form className="add-form" onSubmit={onSubmit}>
+    <div>
+      <form>
         <table>
           <tbody>
             <tr>
@@ -284,11 +283,9 @@ const EventForm = ({ leden, id, event, eventState }) => {
                   )}
                   options={optionsKokers}
                   name="kokers"
-                  // value={kokers}
                   id="id_kokers"
                   onChange={(e) => {
                     setKokers(e?.map((x) => x.value));
-                    console.log(e?.map((x) => x.value));
                   }}
                 />
               </td>
@@ -364,18 +361,16 @@ const EventForm = ({ leden, id, event, eventState }) => {
       </form>
       <Button
         value="Submit"
-        text={deleted ? "undo" : "Submit"}
         type="Submit"
         color="is-success"
         onClick={onSubmit}
-      />
+      >
+        {deleted ? "undo" : "Submit"}
+      </Button>
       {event && (
-        <Button
-          type="delete"
-          text="Delete"
-          color="is-danger"
-          onClick={Delete}
-        />
+        <Button type="delete" color="is-danger" onClick={Delete}>
+          Delete
+        </Button>
       )}
     </div>
   );

@@ -1,10 +1,34 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import ApiContext from "./ApiContext";
+
+/**declas: declas,
+ * 
+    GET_decla: GET_decla,
+    
+    GET: GET,
+    
+    POST: POST,
+    
+    PUT: PUT,
+
+    VERWERK: VERWERK, 
+    
+    DELETE: DELETE,
+    
+    boekstuks: boekstuks,
+    
+    GET_boekstuk: GET_boekstuk,
+    
+    POST_boekstuk: POST_boekstuk,
+    
+    PUT_boekstuk: PUT_boekstuk,
+    
+    DELETE_boekstuk: DELETE_boekstuk, */
 const DeclaContext = createContext();
 export default DeclaContext;
 
 export const DeclaProvider = ({ children }) => {
-  const { ApiRequest, ApiFileRequest } = useContext(ApiContext);
+  const { user, ApiRequest, ApiFileRequest } = useContext(ApiContext);
   const [declas, setDeclas] = useState([]);
 
   const GET = async () => {
@@ -13,7 +37,7 @@ export const DeclaProvider = ({ children }) => {
     if (res.status === 200) {
       setDeclas(data);
     } else {
-      alert("Error fetching declas");
+      console.log("Error fetching declas");
     }
   };
   const GET_decla = async (id) => {
@@ -21,11 +45,11 @@ export const DeclaProvider = ({ children }) => {
     if (res.status === 200) {
       return data;
     } else {
-      alert("Error fetching decla");
+      console.log("Error fetching decla");
     }
   };
   const POST = async (decla) => {
-    console.log(decla.owner);
+    console.log(decla.event.id);
     const uploadData = new FormData();
     decla.owner && uploadData.append("owner", decla.owner);
     decla.event && uploadData.append("event", decla.event.id);
@@ -37,7 +61,7 @@ export const DeclaProvider = ({ children }) => {
     decla.boekstuk && uploadData.append("boekstuk", decla.boekstuk);
     decla.content_ficus &&
       uploadData.append("content_ficus", decla.content_ficus);
-    decla.verwerkt && uploadData.append("verwerkt", decla.verwerkt);
+    uploadData.append("verwerkt", decla.verwerkt);
     decla.receipt &&
       uploadData.append("receipt", decla.receipt, decla.receipt.name);
     const { res, data } = await ApiFileRequest("/api/decla/", {
@@ -47,7 +71,7 @@ export const DeclaProvider = ({ children }) => {
     if (res.status === 200) {
       setDeclas([...declas, data]);
     } else {
-      alert("Decla niet gemaakt");
+      console.log("Decla niet gemaakt");
     }
   };
   const PUT = async (decla) => {
@@ -62,7 +86,7 @@ export const DeclaProvider = ({ children }) => {
     decla.boekstuk && uploadData.append("boekstuk", decla.boekstuk);
     decla.content_ficus &&
       uploadData.append("content_ficus", decla.content_ficus);
-    decla.verwerkt && uploadData.append("verwerkt", decla.verwerkt);
+    uploadData.append("verwerkt", decla.verwerkt);
     decla.receipt &&
       uploadData.append("receipt", decla.receipt, decla.receipt.name);
     const { res, data } = await ApiFileRequest(`/api/decla/${decla.id}`, {
@@ -76,18 +100,35 @@ export const DeclaProvider = ({ children }) => {
         )
       );
     } else {
-      alert("Decla not updated");
+      console.log("Decla not updated");
+    }
+  };
+  const VERWERK = async (decla) => {
+    const uploadData = new FormData();
+    uploadData.append("verwerkt", decla.verwerkt);
+    const { res, data } = await ApiFileRequest(`/api/decla/${decla.id}`, {
+      method: "PUT",
+      body: uploadData,
+    });
+    if (res.status === 200) {
+      setDeclas(
+        declas.map((decla_from_map) =>
+          decla.id === decla_from_map.id ? data : decla_from_map
+        )
+      );
+    } else {
+      console.log("Decla not updated");
     }
   };
   const DELETE = async (decla) => {
-    const { res, data } = await ApiRequest(`/api/decla/${decla.id}`, {
+    const { res } = await ApiRequest(`/api/decla/${decla.id}`, {
       method: "DELETE",
       headers: {
         "Content-type": "application/json",
       },
     });
     if (res.status !== 200) {
-      alert("Decla niet verwijdert ");
+      console.log("Decla niet verwijdert ");
     }
   };
   const [boekstuks, setBoekstuks] = useState([]);
@@ -97,7 +138,7 @@ export const DeclaProvider = ({ children }) => {
     if (res.status === 200) {
       setBoekstuks(data);
     } else {
-      alert("Error getting boekstuks");
+      console.log("Error getting boekstuks");
     }
     return data;
   };
@@ -110,7 +151,7 @@ export const DeclaProvider = ({ children }) => {
     if (res.status === 200) {
       setBoekstuks([...boekstuks, data]);
     } else {
-      alert("Boekstuk niet aangemakt");
+      console.log("Boekstuk niet aangemakt");
     }
     return data;
   }
@@ -129,7 +170,7 @@ export const DeclaProvider = ({ children }) => {
         )
       );
     } else {
-      alert("Boekstuk niet aangemakt");
+      console.log("Boekstuk niet aangemakt");
     }
   }
   async function DELETE_boekstuk(boekstuk) {
@@ -140,7 +181,7 @@ export const DeclaProvider = ({ children }) => {
       },
     });
     if (res.status !== 200) {
-      alert("Boekstuk niet verwijdert");
+      console.log("Boekstuk niet verwijdert");
     }
   }
 
@@ -149,15 +190,18 @@ export const DeclaProvider = ({ children }) => {
       GET();
       GET_boekstuk();
     }
-    lambda();
+    if (user) {
+      lambda();
+    }
     // eslint-disable-next-line
-  }, []);
+  }, [user]);
 
   const data = {
     declas: declas,
     GET_decla: GET_decla,
     GET: GET,
     POST: POST,
+    VERWERK: VERWERK,
     PUT: PUT,
     DELETE: DELETE,
     boekstuks: boekstuks,

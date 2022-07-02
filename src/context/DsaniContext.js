@@ -1,12 +1,14 @@
 import { createContext, useContext } from "react";
 import EventContext from "./EventContext";
 import ApiContext from "./ApiContext";
-
+/**events : events,
+ * 
+    PUT: PUT, */
 const DsaniContext = createContext();
 export default DsaniContext;
 
 export const DsaniProvider = ({ children }) => {
-  const eventState = useContext(EventContext);
+  const { events, setEvents } = useContext(EventContext);
   const { ApiRequest } = useContext(ApiContext);
 
   async function PUT(event) {
@@ -18,9 +20,9 @@ export const DsaniProvider = ({ children }) => {
       body: JSON.stringify(event),
     });
     if (res.status === 200) {
-      eventState.setEvents(
+      setEvents(
         // console.log(
-        eventState.objects()?.map((event_from_map) =>
+        events?.map((event_from_map) =>
           event_from_map.dsani_ev.map((point) => point.id === event.id)
             ? {
                 ...event_from_map,
@@ -31,12 +33,13 @@ export const DsaniProvider = ({ children }) => {
             : event_from_map
         )
       );
-    } else {
-      alert("Dsani Not updated ");
     }
+    // else {
+    //   console.log("Dsani Not updated ");
+    // }
   }
   const data = {
-    objects: eventState.objects,
+    events: events,
     PUT: PUT,
   };
   return <DsaniContext.Provider value={data}>{children}</DsaniContext.Provider>;

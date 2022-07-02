@@ -19,11 +19,37 @@ export const FullProvider = ({ children }) => {
             <EventProvider>
               <DsaniProvider>
                 <DeclaProvider>{children}</DeclaProvider>
+                {/* declas: declas,
+                    GET_decla: GET_decla,
+                    GET: GET,
+                    POST: POST,
+                    PUT: PUT,
+                    DELETE: DELETE,
+                    boekstuks: boekstuks,
+                    GET_boekstuk: GET_boekstuk,
+                    POST_boekstuk: POST_boekstuk,
+                    PUT_boekstuk: PUT_boekstuk,
+                    DELETE_boekstuk: DELETE_boekstuk */}
               </DsaniProvider>
+              {/* PUT: PUT, */}
             </EventProvider>
+            {/* events: events,
+                setEvents:setEvents,
+                POST: POST,
+                PUT: PUT,
+                DELETE: DELETE, */}
           </LedenProvider>
+          {/* leden: leden */}
         </ApiProvider>
+        {/* ApiRequest: ApiRequest,
+            ApiFileRequest: ApiFileRequest, */}
       </AuthProvider>
+      {/* loginFunc: loginFunc,
+          logoutFunc: logOutUser,
+          setAuthTokens: setAuthTokens,
+          setUser: setUser,
+          user: user,
+          authTokens: authTokens, */}
     </FullContext.Provider>
   );
 };

@@ -2,23 +2,12 @@
 import React, { useContext, useState } from "react";
 
 import { Link } from "react-router-dom";
-import Button from "../components/Button";
 import AuthContext from "../context/AuthContext";
-// import HoverDropdown from "./global/HoverDropdown";
 
-const NavBar = ({ setapi }) => {
+const NavBar = () => {
   const { user, logoutFunc } = useContext(AuthContext);
   const [burger, setBurger] = useState(false);
-  const [api, setAPI] = useState(false);
-  const changeapi = () => {
-    setAPI(!api);
-    if (api) {
-      console.log("Success");
-      setapi("https://stropdas2.herokuapp.com");
-    } else {
-      setapi("http://127.0.0.1:8000");
-    }
-  };
+  const [showDropdown, setShowDropdown] = useState(false);
   if (!user) {
     return <></>;
   }
@@ -66,9 +55,9 @@ const NavBar = ({ setapi }) => {
           <Link to="/agenda" onClick={() => setBurger(!burger)}>
             <p className="navbar-item ">Agenda</p>
           </Link>
-          <div className="button" onClick={() => changeapi()}>
+          {/* <div className="button" onClick={() => changeapi()}>
             heroku
-          </div>
+          </div> */}
           <Link to="/dsani" onClick={() => setBurger(!burger)}>
             <p className="navbar-item">DSANI</p>
           </Link>
@@ -80,9 +69,17 @@ const NavBar = ({ setapi }) => {
           </Link>
         </div>
         <div className="navbar-end">
-          <div className="navbar-item has-dropdown is-hoverable">
-            <p className="navbar-link"><p>Hello,  {user?.name}</p></p>
-            <div className="navbar-dropdown">
+          <div
+            className="navbar-item has-dropdown"
+            onMouseEnter={() => setShowDropdown(true)}
+            onMouseLeave={() => setShowDropdown(false)}
+            onClick={() => setShowDropdown(!showDropdown)}
+          >
+            <p className="navbar-link">Hello, {user?.name} </p>
+            <div
+              className="navbar-dropdown"
+              style={{ display: showDropdown ? "block" : "none" }}
+            >
               <li className="navbar-item">
                 <Link to="/agenda" onClick={() => setBurger(!burger)}>
                   Agenda
@@ -110,7 +107,8 @@ const NavBar = ({ setapi }) => {
                 </Link>
               </li>
               <li className="navbar-item">
-                <Link to='/login'
+                <Link
+                  to="/login"
                   onClick={() => {
                     logoutFunc();
                     console.log("loged out");

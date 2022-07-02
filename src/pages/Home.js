@@ -1,4 +1,4 @@
-export const Home = ({}) => {
+export const Home = () => {
   return (
     <>
       <body background="images/blazoen_small.jpg">

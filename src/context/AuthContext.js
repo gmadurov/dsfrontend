@@ -1,14 +1,34 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import jwt_decode from "jwt-decode";
+/** loginFunc: loginFunc,
+ *
+ * logoutFunc: logOutUser,
+ *
+ * setAuthTokens: setAuthTokens,
+ *
+ * setUser: setUser,
+ *
+ * user: user,
+ * {
+  "token_type": "access",
+  "exp": unixdata,
+  "iat": unix date,
+  "jti": "",
+  "user_id": Int,
+  "name": "",
+  "role": [],
+  "lid_id": Int
+} 
+ *
+ * authTokens: authTokens,
+ */
 
 const AuthContext = createContext();
 export default AuthContext;
-
 export const AuthProvider = ({ children }) => {
   // dont use useFetch here because it will not work
 
-  // const [loading, setLoading] = useState(true);
   const [authTokens, setAuthTokens] = useState(
     () =>
       localStorage.getItem("authTokens") &&
@@ -19,7 +39,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.getItem("user") &&
       jwt_decode(JSON.parse(localStorage.getItem("user")))
   );
-  // const [logedIn, setLogin] = useState(false);
+
   const navigate = useNavigate();
   const loginFunc = async (username, password) => {
     let res = await fetch(`/api/users/token/`, {
@@ -33,12 +53,12 @@ export const AuthProvider = ({ children }) => {
     let data = await res.json();
     if (res.status === 200) {
       setAuthTokens(data);
-      setUser(() => jwt_decode(data.access));
+      setUser(jwt_decode(data.access));
       localStorage.setItem("authTokens", JSON.stringify(data));
       localStorage.setItem("user", JSON.stringify(data.access));
       navigate("../agenda", { replace: true });
     } else {
-      alert(`Error with ${data.detail}`);
+      console.log(`Error with ${data.detail}`);
     }
   };
 
@@ -72,21 +92,26 @@ export const AuthProvider = ({ children }) => {
     navigate("../login", { replace: true });
   };
 
-  useEffect(() => {
-    // if (authTokens & !user) {
-    //   console.log("decoded");
-    //   setUser(jwt_decode(authTokens.access));
-    // }
-    // if (loading) {
-    //   updateToken();
-    // }
-    // let interval = setInterval(() => {
-    //   if (authTokens) {
-    //     updateToken();
-    //   }
-    // }, 900000);
-    // return () => clearInterval(interval);
-  }, []);
+  // useEffect(() => {
+  //   // if (authTokens & !user) {
+  //   //   console.log("decoded");
+  //   //   setUser(jwt_decode(authTokens.access));
+  //   // }
+  //   // if (loading) {
+  //   //   updateToken();
+  //   // }
+  //   // let interval = setInterval(() => {
+  //   //   if (authTokens) {
+  //   //     updateToken();
+  //   //   }
+  //   // }, 900000);
+  //   // return () => clearInterval(interval);
+  //   // return user ? (
+  //   //   navigate("../login", { replace: true })
+  //   // ) : (
+  //   //   <AuthContext.Provider value={data}>{children}</AuthContext.Provider>
+  //   // );
+  // }, []);
 
   const data = {
     loginFunc: loginFunc,
@@ -96,8 +121,6 @@ export const AuthProvider = ({ children }) => {
     user: user,
     authTokens: authTokens,
   };
-  return (
-    // loading ? navigate("../login", { replace: true }) :
-    <AuthContext.Provider value={data}>{children}</AuthContext.Provider>
-  );
+  // user && navigate("../login", { replace: true });
+  return <AuthContext.Provider value={data}>{children}</AuthContext.Provider>;
 };

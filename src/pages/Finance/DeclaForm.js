@@ -1,14 +1,14 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Select from "react-select";
 import CreatableSelect from "react-select/creatable";
-import Button from "../../../components/Button";
-import AuthContext from "../../../context/AuthContext";
-import DeclaContext from "../../../context/DeclaContext";
-import LedenContext from "../../../context/LedenContext";
-import EventContext from "../../../context/EventContext";
+import Button from "../../components/Button";
+import AuthContext from "../../context/AuthContext";
+import DeclaContext from "../../context/DeclaContext";
+import LedenContext from "../../context/LedenContext";
+import EventContext from "../../context/EventContext";
 
-export const DeclaFrom = ({}) => {
+export const DeclaFrom = () => {
   let { id } = useParams();
   const navigate = useNavigate();
   const { leden } = useContext(LedenContext);
@@ -19,16 +19,9 @@ export const DeclaFrom = ({}) => {
   const decla = declas?.some((de) => de.id === id)
     ? declas?.find((de) => de.id === id)
     : false;
-  // useEffect(() => {
-  //   async function get() {
-  //     setDecla(await GET_decla(id));
-  //   }
-  //   // setDecla(declas?.find((de) => de.id === id));
-  // }, [id]);
-  console.log(decla);
   const [deleted, setDeleted] = useState(false);
   const [event, setEvent] = useState(decla && decla?.event);
-  const [owner, setOwner] = useState(decla ? decla?.owner : user.id);
+  const [owner, setOwner] = useState(decla ? decla?.owner : user.lid_id);
   const [content, setContent] = useState(decla ? decla?.content : "");
   const [total, setTotal] = useState(decla ? decla?.total : 0);
   const [present, setPresent] = useState(decla ? decla?.present : []);
@@ -84,60 +77,63 @@ export const DeclaFrom = ({}) => {
     setDeleted(true);
   };
   const onSubmit = (e) => {
-    if (!event | !content | !total | !present) {
-      alert("Je moet een evenement kiezen");
-      return;
-    }
+    // if (!event | !content | !total | !present) {
+    //   alert("Je moet een evenement kiezen");
+    //   return;
+    // }
     e.preventDefault();
     if (decla) {
       PUT({
         id,
-        event,
-        content,
-        total,
-        present,
-        receipt,
-        reunist,
-        kmters,
-        boekstuk,
-        content_ficus,
-        verwerkt,
+        owner,event,content,total,present,receipt,reunist,kmters,boekstuk,content_ficus,verwerkt,
       });
       navigate("/declas");
     } else {
       POST({
-        owner,
-        event,
-        content,
-        total,
-        present,
-        receipt,
-        reunist,
-        kmters,
-        boekstuk,
-        content_ficus,
-        verwerkt,
-      });
+        owner,event,content,total,present,receipt,reunist,kmters,boekstuk,content_ficus,verwerkt,});
     }
     setDeleted(false);
   };
   return (
-    <div className="columns is-desktop">
+    <div className="columns">
       <div className="column is-half is-offset-3">
-        <form encType="multipart/form-data">
+        <form>
           <table>
             <tbody>
+              {user.roles.includes("Fiscus") && (
+                <tr>
+                  <th>
+                    <label htmlFor="id_lid">Lid:</label>
+                  </th>
+
+                  <td className="field">
+                    <Select
+                      defaultValue={optionsLeden?.find(
+                        (x) => x.value === owner
+                      )}
+                      options={optionsLeden?.filter(
+                        (x) => !["all", 19900].includes(x.value)
+                      )}
+                      name="owner"
+                      id="id_present"
+                      onChange={(e) => {
+                        setOwner(e.value);
+                      }}
+                    />
+                  </td>
+                </tr>
+              )}
               <tr>
                 <th>
                   <label htmlFor="id_event">Event:</label>
                 </th>
-                <td>
+                <td className="field">
                   <Select
                     defaultValue={optionsEvents?.find(
                       (x) => x.value === event?.id
                     )}
                     options={optionsEvents}
-                    name="kokers"
+                    name="event"
                     onChange={(e) => {
                       setEvent(e.value);
                     }}
@@ -149,7 +145,7 @@ export const DeclaFrom = ({}) => {
                 <th>
                   <label htmlFor="id_content">Content:</label>
                 </th>
-                <td>
+                <td className="field">
                   <textarea
                     name="content"
                     value={content}
@@ -170,7 +166,7 @@ export const DeclaFrom = ({}) => {
                 <th>
                   <label htmlFor="id_total">Total:</label>
                 </th>
-                <td>
+                <td className="field">
                   <input
                     type="number"
                     onChange={(e) => setTotal(e.target.value)}
@@ -186,14 +182,15 @@ export const DeclaFrom = ({}) => {
 
               <tr>
                 <th>
-                  <label htmlFor="id_kokers">Present:</label>
+                  <label htmlFor="id_present">Present:</label>
                 </th>
                 <Select
                   isMulti
                   value={defaultValues}
                   options={optionsLeden}
-                  name="kokers"
-                  id="id_kokers"
+                  required
+                  name="present"
+                  id="id_present"
                   onChange={(e) => {
                     if (e.some((val) => val.value === "all")) {
                       setPresent(
@@ -219,10 +216,11 @@ export const DeclaFrom = ({}) => {
                 <th>
                   <label htmlFor="id_receipt">Receipt:</label>
                 </th>
-                <td>
+                <td className="field">
                   <input
                     type="file"
                     name="receipt"
+                    required
                     // value={receipt}
                     accept="image/*"
                     onChange={(e) => {
@@ -238,14 +236,14 @@ export const DeclaFrom = ({}) => {
                 <th>
                   <label htmlFor="id_reunist">Reunist:</label>
                 </th>
-                <td>
+                <td className="field">
                   <input
                     onChange={(e) => setReunist(e.target.value)}
                     type="number"
                     name="reunist"
-                    value={reunist}
+                    value={reunist !== 0 ? reunist : ""}
+                    placeholder={reunist === 0 ? reunist : ""}
                     className="input"
-                    required
                     id="id_reunist"
                   />
                 </td>
@@ -255,11 +253,12 @@ export const DeclaFrom = ({}) => {
                 <th>
                   <label htmlFor="id_kmters">Kmters:</label>
                 </th>
-                <td>
+                <td className="field">
                   <input
                     type="number"
                     name="kmters"
-                    value={kmters}
+                    value={kmters !== 0 ? kmters : ""}
+                    placeholder={kmters === 0 ? kmters : ""}
                     onChange={(e) => setKmters(e.target.value)}
                     className="input"
                     required
@@ -272,7 +271,7 @@ export const DeclaFrom = ({}) => {
                 <th>
                   <label htmlFor="id_boekstuk">Boekstuk:</label>
                 </th>
-                <td>
+                <td className="field">
                   <CreatableSelect
                     defaultValue={optionsBoekstuk?.find(
                       (x) => x.value === boekstuk
@@ -292,7 +291,7 @@ export const DeclaFrom = ({}) => {
                 <th>
                   <label htmlFor="id_content_ficus">Content ficus:</label>
                 </th>
-                <td>
+                <td className="field">
                   <textarea
                     onChange={(e) => setContent_ficus(e.target.value)}
                     name="content_ficus"
@@ -305,40 +304,39 @@ export const DeclaFrom = ({}) => {
                   ></textarea>
                 </td>
               </tr>
-
-              <tr>
-                <th>
-                  <label htmlFor="id_verwerkt">Verwerkt:</label>
-                </th>
-                <td>
-                  <input
-                    type="checkbox"
-                    name="verwerkt"
-                    checked={verwerkt}
-                    className="checkbox"
-                    onChange={(e) => {
-                      setVerwerkt(e.target.checked);
-                    }}
-                    id="id_verwerkt"
-                  />
-                </td>
-              </tr>
+              {user.roles.includes("Fiscus") && (
+                <tr>
+                  <th>
+                    <label htmlFor="id_verwerkt">Verwerkt:</label>
+                  </th>
+                  <td className="field">
+                    <input
+                      type="checkbox"
+                      name="verwerkt"
+                      checked={verwerkt}
+                      className="checkbox"
+                      onChange={(e) => {
+                        setVerwerkt(e.target.checked);
+                      }}
+                      id="id_verwerkt"
+                    />
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </form>
-        <Button
-          value="Submit"
-          text={deleted ? "undo" : "Submit"}
-          color="is-success"
-          onClick={onSubmit}
-        >
-          Submit
+        <Button value="Submit" color="is-success" onClick={onSubmit}>
+          {deleted ? "undo" : "Submit"}
         </Button>
         {decla && (
           <Button type="delete" color="is-danger" onClick={onDelete}>
             Delete
           </Button>
         )}
+        <Button value="Submit" color="is-info" onClick={() => navigate(-1)}>
+          Terug
+        </Button>
       </div>
     </div>
   );

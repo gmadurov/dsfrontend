@@ -10,7 +10,7 @@ const Footer = () => {
         <p>Version 20.4.0</p>
       </div>
       <div className="content has-text-right">
-        <p href="https://bulma.io/documentation/">
+        <p>
           <b>Legal</b>
         </p>
         <Link to="/privacy">

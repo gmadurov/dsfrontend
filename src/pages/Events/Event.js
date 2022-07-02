@@ -1,15 +1,16 @@
 import PropTypes from "prop-types";
-import React, { useState } from "react";
-// import { format } from "date-fns";
+import React, { useContext, useState } from "react";
+import { isMobile } from "react-device-detect";
 import moment from "moment";
-// import HoverDropdown from "../../../components/HoverDropdown";
-// import ClickDropdown from "../../../components/ClickDropdown";
+import ClickDropdown from "../../components//ClickDropdown";
 import EventForm from "./EventForm";
-// import { Link } from "react-router-dom";
+import LedenContext from "../../context/LedenContext";
+import { ReactComponent as EditIcon } from "../../assets/mumble/edit.svg";
+import AuthContext from "../../context/AuthContext";
 
-// import { ReactComponent as EditIcon } from "../../../assets/mumble/edit.svg";
-
-const Event = ({ leden, event, eventState }) => {
+const Event = ({ event }) => {
+  const { user } = useContext(AuthContext);
+  const { leden } = useContext(LedenContext);
   const [show1, setShow] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   let styleSummary;
@@ -28,15 +29,15 @@ const Event = ({ leden, event, eventState }) => {
     : event.summary === "Activiteit"
     ? (styleSummary = "rgba(35, 32, 209, 0.685)")
     : (styleSummary = "#bbb");
+
   show1 === true
     ? (showStyle = { display: "block" })
     : (showStyle = { display: "none" });
   showEdit === true
     ? (showStyleEdit = { display: "block" })
     : (showStyleEdit = { display: "none" });
-
-  return (
-    <>
+  if (isMobile) {
+    return (
       <div className="card mt-2">
         <header
           className="card-header"
@@ -71,21 +72,18 @@ const Event = ({ leden, event, eventState }) => {
               <div className="dropdown-menu is-centered" style={showStyleEdit}>
                 <div className="dropdown-items" style={{ textAlign: "center" }}>
                   <EventForm
-                    leden={leden}
                     key={"form" + event.id}
                     id={event.id}
                     event={event}
-                    eventState={eventState}
                   />
                 </div>
               </div>
             </div>
-
             <p>
               tot:{" "}
               {moment(event.end_date + "T" + event.end_time).format(
                 "ddd Do MMM, hh:mmA"
-              )}{" "}
+              )}
             </p>
             {event.location && <p>Location: {event.location}</p>}
             <p>
@@ -99,12 +97,64 @@ const Event = ({ leden, event, eventState }) => {
             <p>{event.bijzonderheden && event.bijzonderheden}</p>
             <p>{event.budget && "Budget:" + event.budget}</p>
             <p>{event.info && "Extra info:" + event.info}</p>
-            {/* <ClickDropdown key={event.id} dropText="Edit" items={<><EventForm key={event.id} id={event.id}pastevent={event}onAdd={onAdd}onEdit={onEdit}onDelete={onDelete}/></>}/> */}
+            {user.roles.includes("Senate") && (
+              <div onClick={() => setShowEdit(!showEdit)}>
+                Edit
+                <EditIcon style={{ height: "20", width: "20" }} />
+              </div>
+            )}
           </div>
         </div>
       </div>
-    </>
-  );
+    );
+  } else {
+    return (
+      <tr>
+        <td style={{ textAline: "center" }}>
+          {event.start_date
+            ? moment(event.start_date + "T" + event.start_time).format(
+                "ddd Do MMM, hh:mmA"
+              )
+            : " "}{" "}
+          {/* "{ event.start_date+'T'+event.start_time}" */}
+        </td>
+
+        <td style={{ backgroundColor: styleSummary }}>
+          {event.summary ? event.summary : ""}
+        </td>
+
+        <td style={{ textAline: "center" }}>
+          {event.description} {"  "}
+          {event.location ? "(Loc: " + event.location + ")" : ""}
+        </td>
+        <td style={{ textAline: "center" }}>
+          {event.kokers?.map(
+            (koker) => leden?.find((x) => x.id === koker)?.initials + " "
+          )}
+        </td>
+        <td style={{ textAline: "center" }}>
+          {event.kartrekkers ? event.kartrekkers : ""}
+        </td>
+        <td style={{ textAline: "center" }}>
+          {event.bijzonderheden ? event.bijzonderheden : ""}
+        </td>
+        <td style={{ textAline: "center" }}>
+          {event.budget ? event.budget : ""}
+        </td>
+        <td style={{ textAline: "center" }}>
+          <ClickDropdown
+            key={event.id}
+            dropText="Edit"
+            items={
+              <>
+                <EventForm key={event.id} id={event.id} event={event} />
+              </>
+            }
+          />
+        </td>
+      </tr>
+    );
+  }
 };
 
 Event.propTypes = {

@@ -1,12 +1,12 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import ApiContext from "./ApiContext";
-
+/**leden: leden */
 const LedenContext = createContext();
 export default LedenContext;
 
 export const LedenProvider = ({ children }) => {
   const [leden, setLeden] = useState([]);
-  const { ApiRequest } = useContext(ApiContext);
+  const { user, ApiRequest } = useContext(ApiContext);
 
   const getLeden = async () => {
     const { res, data } = await ApiRequest("/api/leden/");
@@ -20,11 +20,12 @@ export const LedenProvider = ({ children }) => {
     async function getit() {
       await getLeden();
     }
-    if (leden < 2) {
+    if (user) {
       getit();
     }
-  }, []);
+    // eslint-disable-next-line
+  }, [user]);
 
-  const data = { getLeden: getLeden, leden: leden };
+  const data = { leden: leden };
   return <LedenContext.Provider value={data}>{children}</LedenContext.Provider>;
 };

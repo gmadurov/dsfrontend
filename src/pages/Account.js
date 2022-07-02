@@ -1,5 +1,5 @@
 
-export const Account = ({}) => {
+export const Account = () => {
   return (<>
     
   </>)

@@ -1,9 +1,11 @@
 import React from "react";
 
-const Page = ({ children, ...rest }) => {
+const Page = ({ children, className, ...rest }) => {
   return (
-    <div className="columns has-text-centered">
-      <div className="column">{children}</div>
+    <div className="columns is-centered">
+      <div className={className ? className : "column is-10"} {...rest}>
+        {children}
+      </div>
     </div>
   );
 };
