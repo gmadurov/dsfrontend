@@ -4,7 +4,7 @@ import { createContext, useContext } from "react";
 import AuthContext from "./AuthContext";
 
 const baseUrl = "http://localhost:8000";
-
+// ("https://stropdas2.herokuapp.com/");
 /**### use this instead of fetch
  * user: user, type
  * {"token_type": string,"exp": unix date,"iat": unix date,"jti": string,"user_id": Int,"name": string,"roles": [ ],"lid_id": Int}
