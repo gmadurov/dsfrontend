@@ -28,7 +28,7 @@ const AuthContext = createContext();
 export default AuthContext;
 export const AuthProvider = ({ children }) => {
   // dont use useFetch here because it will not work
-
+  let baseUrl = 'https://stropdas.herokuapp.com/' 
   const [authTokens, setAuthTokens] = useState(
     () =>
       localStorage.getItem("authTokens") &&
@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
 
   const navigate = useNavigate();
   const loginFunc = async (username, password) => {
-    let res = await fetch(`/api/users/token/`, {
+    let res = await fetch(`https://stropdas.herokuapp.com/api/users/token/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

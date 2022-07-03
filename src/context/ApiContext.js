@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import { createContext, useContext } from "react";
 import AuthContext from "./AuthContext";
 
-const baseUrl = "http://localhost:8000";
+const baseUrl = "https://stropdas.herokuapp.com";
 // ("https://stropdas2.herokuapp.com/");
 /**### use this instead of fetch
  * user: user, type
@@ -28,7 +28,7 @@ export const ApiProvider = ({ children }) => {
   /** makes the original request called but with the Bearer set and to the correct location */
   const originalRequest = async (url, config) => {
     let urlFetch = `${baseUrl}${url}`;
-    // console.log("request=", urlFetch, config);
+    console.log("request=", urlFetch, config);
     const res = await fetch(urlFetch, config);
     const data = await res.json();
     if (res.status !== 200) {

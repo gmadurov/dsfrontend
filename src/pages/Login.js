@@ -9,6 +9,7 @@ export const LoginPage = () => {
   const [password, setPassword] = useState("");
   const logMeIn = (e) => {
     e.preventDefault();
+    console.log('loging in ');
     loginFunc(username, password);
   };
   if (user) return <Navigate to="/agenda" replace />;

@@ -44,7 +44,7 @@ export const Declas = () => {
       return false;
     }
   });
-
+  console.log(user.roles);
   return (
     <>
       <div className="columns">
