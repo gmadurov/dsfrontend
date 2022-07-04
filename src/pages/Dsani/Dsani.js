@@ -5,7 +5,7 @@ import LedenContext from "../../context/LedenContext";
 import { isMobile } from "react-device-detect";
 import DsaniContext from "../../context/DsaniContext";
 import DsaniEvent from "./DsaniEvent";
-import Page from "../Page";
+import Page from "../../utils/Page";
 const Dsani = () => {
   const { leden } = useContext(LedenContext);
   let { events } = useContext(DsaniContext);

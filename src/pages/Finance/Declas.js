@@ -2,14 +2,12 @@ import { useContext, useEffect, useState } from "react";
 import DeclaContext from "../../context/DeclaContext";
 import LedenContext from "../../context/LedenContext";
 import Decla from "./Decla";
-import AuthContext from "../../context/AuthContext";
 
 /**
  *  test docstring
  */
-export const Declas = () => {
-  const { user } = useContext(AuthContext);
-  const { leden } = useContext(LedenContext);
+export const Declas = ({ declasToShow, ...rest }) => {
+  const { user, leden } = useContext(LedenContext);
   let { declas, GET, boekstuks } = useContext(DeclaContext);
   useEffect(() => {
     const get = async () => {
@@ -18,7 +16,7 @@ export const Declas = () => {
     get();
     // eslint-disable-next-line
   }, []);
-
+  declas = declasToShow ? declasToShow : declas;
   const [search, setSearch] = useState("");
   declas = declas?.filter((decla) => {
     if (
@@ -44,10 +42,9 @@ export const Declas = () => {
       return false;
     }
   });
-  console.log(user.roles);
   return (
     <>
-      <div className="columns">
+      <div className={"columns " + rest.className}>
         <div className="column is-offset-2 is-8">
           <div className="search">
             <input
@@ -70,8 +67,12 @@ export const Declas = () => {
                   <th>Boekstuk</th>
                   <th>Ficus Comment</th>
                   <th>Total</th>
-                  {user.roles.includes("Fiscus") && <th>Verwerkt</th>}
-                  <th>Actie</th>
+                  {user.roles.includes("Fiscus") && (
+                    <>
+                      <th>Verwerkt</th>
+                      <th>Actie</th>
+                    </>
+                  )}
                 </tr>
               </thead>
               <tbody>

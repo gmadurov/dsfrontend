@@ -141,17 +141,19 @@ const Event = ({ event }) => {
         <td style={{ textAline: "center" }}>
           {event.budget ? event.budget : ""}
         </td>
-        <td style={{ textAline: "center" }}>
-          <ClickDropdown
-            key={event.id}
-            dropText="Edit"
-            items={
-              <>
-                <EventForm key={event.id} id={event.id} event={event} />
-              </>
-            }
-          />
-        </td>
+        {user.roles.includes("Senate") && (
+          <td style={{ textAline: "center" }}>
+            <ClickDropdown
+              key={"EventEdit " + event.id}
+              dropText="Edit"
+              items={
+                <>
+                  <EventForm key={event.id} id={event.id} event={event} />
+                </>
+              }
+            />
+          </td>
+        )}
       </tr>
     );
   }

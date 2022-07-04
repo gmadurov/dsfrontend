@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import Select from "react-select";
 import CreatableSelect from "react-select/creatable";
 import Button from "../../components/Button";
-import AuthContext from "../../context/AuthContext";
 import DeclaContext from "../../context/DeclaContext";
 import LedenContext from "../../context/LedenContext";
 import EventContext from "../../context/EventContext";
@@ -11,14 +10,21 @@ import EventContext from "../../context/EventContext";
 export const DeclaFrom = () => {
   let { id } = useParams();
   const navigate = useNavigate();
-  const { leden } = useContext(LedenContext);
-  const { user } = useContext(AuthContext);
+  const { user, leden } = useContext(LedenContext);
   const { events } = useContext(EventContext);
   let { declas, POST, PUT, DELETE, boekstuks, POST_boekstuk } =
     useContext(DeclaContext);
-  const decla = declas?.some((de) => de.id === id)
-    ? declas?.find((de) => de.id === id)
-    : false;
+  // useEffect(() => {GET, GET_decla,
+  //   const get = async () => {
+  //     await GET();
+  //     const data = await GET_decla(id);
+  //     setDecla(data);
+  //   };
+  //   get();
+  //   // eslint-disable-next-line
+  // }, [id]);
+  // eslint-disable-next-line
+  const [decla, setDecla] = useState(declas?.find((de) => de.id === id));
   const [deleted, setDeleted] = useState(false);
   const [event, setEvent] = useState(decla && decla?.event);
   const [owner, setOwner] = useState(decla ? decla?.owner : user.lid_id);
@@ -85,15 +91,44 @@ export const DeclaFrom = () => {
     if (decla) {
       PUT({
         id,
-        owner,event,content,total,present,receipt,reunist,kmters,boekstuk,content_ficus,verwerkt,
+        owner,
+        event,
+        content,
+        total,
+        present,
+        receipt,
+        reunist,
+        kmters,
+        boekstuk,
+        content_ficus,
+        verwerkt,
       });
       navigate("/declas");
     } else {
       POST({
-        owner,event,content,total,present,receipt,reunist,kmters,boekstuk,content_ficus,verwerkt,});
+        owner,
+        event,
+        content,
+        total,
+        present,
+        receipt,
+        reunist,
+        kmters,
+        boekstuk,
+        content_ficus,
+        verwerkt,
+      });
     }
     setDeleted(false);
   };
+  if (user?.lid_id !== decla?.owner &&  !user.roles.includes("Fiscus")) {
+    return (
+      <h3>
+        Naughty Naughty, you cheeky bastard but you can't edit other peoples
+        declas!!
+      </h3>
+    );
+  }
   return (
     <div className="columns">
       <div className="column is-half is-offset-3">

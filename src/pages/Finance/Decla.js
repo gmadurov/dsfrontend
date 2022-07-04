@@ -1,13 +1,14 @@
 import { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import DeclaContext from "../../context/DeclaContext";
 import LedenContext from "../../context/LedenContext";
 import Button from "../../components/Button";
 import HoverCell from "../../components/HoverCell";
 
 export const Decla = ({ decla }) => {
-  const { leden } = useContext(LedenContext);
+  const { user, leden } = useContext(LedenContext);
   let { VERWERK, DELETE, boekstuks } = useContext(DeclaContext);
+  let navigate = useNavigate();
   let styleSummary;
   decla?.event?.summary === "Wedstrijd"
     ? (styleSummary = "red")
@@ -42,6 +43,9 @@ export const Decla = ({ decla }) => {
 
         <td style={{ textAlign: "center" }}>
           {leden?.find((x) => x.id === decla?.owner)?.initials}
+          {decla?.owner === user?.lid_id && <Link to={`/decla/${decla?.id}`}>
+            <Button color="is-link">Edit</Button>
+          </Link>}
         </td>
         <td style={{ textAlign: "center" }}>
           <HoverCell
@@ -57,23 +61,27 @@ export const Decla = ({ decla }) => {
           {boekstuks?.find((BS) => BS.id === decla?.boekstuk)?.name}
         </td>
         <td style={{ textAlign: "center" }}>{decla?.content_ficus}</td>
-        <td style={{ textAlign: "center" }}>{decla?.total}</td>
-        <td style={{ textAlign: "center" }}>
-          <Button
-            color={decla?.verwerkt === true ? "is-success" : "is-danger"}
-            onClick={() => onVerwerk()}
-          >
-            <p>{decla?.verwerkt === true ? "True" : "False"}</p>
-          </Button>
-        </td>
-        <td style={{ textAlign: "center" }}>
-          <Link to={`/decla/${decla?.id}`}>
-            <Button color="is-link">Edit</Button>
-          </Link>
-          <Button color="is-danger" onClick={() => onDelete()}>
-            Delete
-          </Button>
-        </td>
+        <td style={{ textAlign: "center" }}>€{decla?.total}</td>
+        {user.roles.includes("Fiscus") && (
+          <>
+            <td style={{ textAlign: "center" }}>
+              <Button
+                color={decla?.verwerkt === true ? "is-success" : "is-danger"}
+                onClick={() => onVerwerk()}
+              >
+                <p>{decla?.verwerkt === true ? "True" : "False"}</p>
+              </Button>
+            </td>
+            <td style={{ textAlign: "center" }}>
+              <Link to={`/decla/${decla?.id}`}>
+                <Button color="is-link">Edit</Button>
+              </Link>
+              <Button color="is-danger" onClick={() => onDelete()}>
+                Delete
+              </Button>
+            </td>
+          </>
+        )}
       </tr>
     </>
   );

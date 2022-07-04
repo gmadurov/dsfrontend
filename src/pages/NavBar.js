@@ -52,6 +52,7 @@ const NavBar = () => {
       <div className={burger ? "navbar-menu is-active" : "navbar-menu"}>
         <div className="navbar-start">
           <div className="navbar-item"></div>
+
           <Link to="/agenda" onClick={() => setBurger(!burger)}>
             <p className="navbar-item ">Agenda</p>
           </Link>
@@ -80,6 +81,14 @@ const NavBar = () => {
               className="navbar-dropdown"
               style={{ display: showDropdown ? "block" : "none" }}
             >
+              <li className="navbar-item">
+                <Link
+                  to={`/account/${user.lid_id}`}
+                  onClick={() => setBurger(!burger)}
+                >
+                  Account
+                </Link>
+              </li>
               <li className="navbar-item">
                 <Link to="/agenda" onClick={() => setBurger(!burger)}>
                   Agenda

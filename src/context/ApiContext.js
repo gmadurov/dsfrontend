@@ -3,7 +3,17 @@ import dayjs from "dayjs";
 import { createContext, useContext } from "react";
 import AuthContext from "./AuthContext";
 
-const baseUrl = "https://stropdas.herokuapp.com";
+//  "https://stropdas.herokuapp.com";
+//  "http://127.0.0.1:8000";
+export const baseUrl = () => {
+  let LOCAL = !true;
+  if (LOCAL) {
+    return "http://127.0.0.1:8000";
+  } else {
+    return "https://stropdas.herokuapp.com";
+  }
+};
+
 // ("https://stropdas2.herokuapp.com/");
 /**### use this instead of fetch
  * user: user, type
@@ -27,8 +37,7 @@ export const ApiProvider = ({ children }) => {
     useContext(AuthContext);
   /** makes the original request called but with the Bearer set and to the correct location */
   const originalRequest = async (url, config) => {
-    let urlFetch = `${baseUrl}${url}`;
-    console.log("request=", urlFetch, config);
+    let urlFetch = `${baseUrl()}${url}`;
     const res = await fetch(urlFetch, config);
     const data = await res.json();
     if (res.status !== 200) {
@@ -38,7 +47,7 @@ export const ApiProvider = ({ children }) => {
   };
   /** gets the refresh token and update the local state and local storage */
   const refreshToken = async (authTokens) => {
-    const res = await fetch(`${baseUrl}/api/users/token/refresh/`, {
+    const res = await fetch(`${baseUrl()}/api/users/token/refresh/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -64,7 +73,10 @@ export const ApiProvider = ({ children }) => {
       dayjs.unix(authTokens?.refresh?.exp).diff(dayjs(), "minute") < 1;
     const isExpired = dayjs.unix(user?.exp).diff(dayjs(), "minute") < 1;
     if (isExpiredRefresh) {
+      console.log('refresh token is expired, you were logged out');
       logoutFunc();
+    } else {
+      // refreshToken(authTokens);
     }
     if (isExpired && authTokens) {
       refreshToken(authTokens);
@@ -93,6 +105,12 @@ export const ApiProvider = ({ children }) => {
     };
     if (user) {
       const [res, data] = await originalRequest(url, config);
+      if (res.status === 401) {
+        console.log("Unauthorized", url, config);
+      }
+      if (res.status === 403) {
+        console.log("Permision denied", url, config);
+      }
       return { res, data };
     }
 

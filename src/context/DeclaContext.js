@@ -29,7 +29,7 @@ export default DeclaContext;
 
 export const DeclaProvider = ({ children }) => {
   const { user, ApiRequest, ApiFileRequest } = useContext(ApiContext);
-  const [declas, setDeclas] = useState([]);
+  const [declas, setDeclas] = useState();
 
   const GET = async () => {
     setDeclas([]);
@@ -49,10 +49,10 @@ export const DeclaProvider = ({ children }) => {
     }
   };
   const POST = async (decla) => {
-    console.log(decla.event.id);
+    console.log(decla.event);
     const uploadData = new FormData();
     decla.owner && uploadData.append("owner", decla.owner);
-    decla.event && uploadData.append("event", decla.event.id);
+    decla.event && uploadData.append("event", decla.event);
     decla.content && uploadData.append("content", decla.content);
     decla.total && uploadData.append("total", decla.total);
     decla.present && uploadData.append("present", decla.present);
@@ -187,8 +187,8 @@ export const DeclaProvider = ({ children }) => {
 
   useEffect(() => {
     async function lambda() {
-      GET();
-      GET_boekstuk();
+      await GET();
+      await GET_boekstuk();
     }
     if (user) {
       lambda();

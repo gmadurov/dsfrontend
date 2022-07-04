@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { Navigate } from "react-router-dom";
-import AuthContext from "../context/AuthContext";
-import Page from "./Page";
+import AuthContext from "../../context/AuthContext";
+import Page from "../../utils/Page";
 
 export const LoginPage = () => {
   const { user, loginFunc } = useContext(AuthContext);
@@ -9,7 +9,6 @@ export const LoginPage = () => {
   const [password, setPassword] = useState("");
   const logMeIn = (e) => {
     e.preventDefault();
-    console.log('loging in ');
     loginFunc(username, password);
   };
   if (user) return <Navigate to="/agenda" replace />;

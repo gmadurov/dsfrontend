@@ -1,7 +1,7 @@
 // import PropTypes from "prop-types";
 import React, { useContext, useState } from "react";
 import Event from "./Event";
-import Page from "../../pages/Page";
+import Page from "../../utils/Page";
 import EventForm from "./EventForm";
 import ClickDropdown from "../../components/ClickDropdown";
 import { isMobile } from "react-device-detect";
@@ -11,9 +11,9 @@ import Paginator from "../../components/Paginator";
 
 const Events = () => {
   let { events } = useContext(EventContext);
-  const { leden } = useContext(LedenContext);
+
+  const { user, leden } = useContext(LedenContext);
   const [search, setSearch] = useState("");
-  const [paginator, setPaginator] = useState(1);
   let numberEvents = 25;
   events = events?.filter((event) => {
     if (
@@ -22,18 +22,19 @@ const Events = () => {
       event.description?.toLowerCase().includes(search.toLowerCase()) |
       event.info?.toLowerCase().includes(search.toLowerCase()) |
       event.kokers
-        ?.map((koker) =>
+      ?.map((koker) =>
           leden?.find((x) => x.id === koker)?.initials.toLowerCase()
         )
         .includes(search.toLowerCase()) |
-      event.start_date?.toLowerCase().includes(search.toLowerCase())
-    ) {
+        event.start_date?.toLowerCase().includes(search.toLowerCase())
+        ) {
       return event;
     } else {
       return false;
     }
   });
 
+  const [paginator, setPaginator] = useState(1);
   let changePage = (page) => {
     setPaginator(page);
   };
@@ -96,12 +97,14 @@ const Events = () => {
                   <th>Kartrekkers</th>
                   <th>Bijzonderheden</th>
                   <th>Budget</th>
-                  <th>
-                    <ClickDropdown
-                      dropText="Event Toevogen"
-                      items={<EventForm />}
-                    />
-                  </th>
+                  {user.roles.includes("Senate") && (
+                    <th>
+                      <ClickDropdown
+                        dropText="Event Toevogen"
+                        items={<EventForm />}
+                      />
+                    </th>
+                  )}
                 </tr>
                 {events?.map((event) => (
                   <Event key={"event " + event.id} event={event} />

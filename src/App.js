@@ -5,7 +5,7 @@ import NavBar from "./pages/NavBar";
 // import { isMobile } from "react-device-detect";
 import { FullProvider } from "./context/FullContext";
 import PrivateRoute from "./utils/PrivateRoute";
-import Page from "./pages/Page";
+import Page from "./utils/Page";
 import Declas from "./pages/Finance/Declas";
 import { default as DeclaForm } from "./pages/Finance/DeclaForm";
 import { default as Dsani } from "./pages/Dsani/Dsani";
@@ -13,12 +13,14 @@ import { default as EventForm } from "./pages/Events/EventForm";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { default as Events } from "./pages/Events/Events";
 // extra imports
-import LoginPage from "./pages/Login";
+import LoginPage from "./pages/User/Login";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Test from "./pages/Test";
 import Footer from "./pages/Footer";
-// import Home from "./pages/pages/Home";
+import Account from "./pages/User/Account";
+import AccountForm from "./pages/User/AccountForm";
 function App() {
+  let NumberPerPage = 25
   return (
     <Router>
       <div className="cointainer  is-max-desktop has-text-centered">
@@ -30,7 +32,7 @@ function App() {
               exact
               element={
                 <PrivateRoute>
-                  <Events />
+                  <Events NumberPerPage={NumberPerPage} />
                 </PrivateRoute>
               }
             />
@@ -39,7 +41,7 @@ function App() {
               element={
                 <PrivateRoute>
                   <Page>
-                    <Events />
+                    <Events NumberPerPage={NumberPerPage} />
                   </Page>
                 </PrivateRoute>
               }
@@ -48,7 +50,7 @@ function App() {
               path="/dsani"
               element={
                 <PrivateRoute>
-                  <Dsani />
+                  <Dsani NumberPerPage={NumberPerPage} />
                 </PrivateRoute>
               }
             />
@@ -71,7 +73,27 @@ function App() {
               path="/declas"
               element={
                 <PrivateRoute>
-                  <Declas />
+                  <Declas NumberPerPage={NumberPerPage}  />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/account/:id"
+              element={
+                <PrivateRoute>
+                  <Page>
+                    <Account />
+                  </Page>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/edit-account/:id"
+              element={
+                <PrivateRoute>
+                  <Page>
+                    <AccountForm />
+                  </Page>
                 </PrivateRoute>
               }
             />

@@ -7,7 +7,6 @@ const ClickDropdown = ({ dropText, items }) => {
   return (
     <Dropdown className="d-inline mx-2" style={{ width: "100px" }}>
       <Dropdown.Toggle id="dropdown-autoclose-true">{dropText}</Dropdown.Toggle>
-
       <Dropdown.Menu>
         <Dropdown style={{ width: "350px" }}>{items}</Dropdown>
       </Dropdown.Menu>
