@@ -74,7 +74,7 @@ export const DeclaProvider = ({ children }) => {
       console.log("Decla niet gemaakt");
     }
   };
-  const PUT = async (decla) => {
+  const PUT = async (decla, blob) => {
     const uploadData = new FormData();
     decla.id && uploadData.append("id", decla.id);
     decla.event && uploadData.append("event", decla.event.id);
@@ -87,8 +87,7 @@ export const DeclaProvider = ({ children }) => {
     decla.content_ficus &&
       uploadData.append("content_ficus", decla.content_ficus);
     uploadData.append("verwerkt", decla.verwerkt);
-    decla.receipt &&
-      uploadData.append("receipt", decla.receipt, decla.receipt.name);
+    blob && uploadData.append("receipt", decla.receipt, decla.receipt.name);
     const { res, data } = await ApiFileRequest(`/api/decla/${decla.id}`, {
       method: "PUT",
       body: uploadData,

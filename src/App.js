@@ -91,27 +91,27 @@ function App() {
               path="/account/:id/edit"
               element={
                 <PrivateRoute>
-                  <Page>
+                  <Page className='column is-3'>
                     <AccountForm />
                   </Page>
                 </PrivateRoute>
               }
             />
-            {/* <Route
+            <Route
               path="/decla"
               element={
                 <PrivateRoute>
-                  <Page>
+                  <Page className='column is-6'>
                     <DeclaForm />
                   </Page>
                 </PrivateRoute>
               }
-            /> */}
+            />
             <Route
               path="/decla/:id"
               element={
                 <PrivateRoute>
-                  <Page>
+                  <Page className='column is-6'>
                     <DeclaForm />
                   </Page>
                 </PrivateRoute>

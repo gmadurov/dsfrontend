@@ -1,105 +1,200 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import Button from "../../components/Button";
+import AuthContext from "../../context/AuthContext";
 import LedenContext from "../../context/LedenContext";
-
 export const AccountForm = (props) => {
-  const { lid } = useContext(LedenContext);
-  /*   {active: Boolean
-birth_date: date isoformat
-created: date isoformat 
-educations: null
-email: string 
-id: Int 
-initials: string 
-lichting: int 
-lid_image: string(link)
-name: int
-phone: int or string 
-short_intro: null 
-user: int 
-vertical: int}
- */
-  const [active, setActive] = useState(lid && lid?.active);
-  const [birthDate, setBirthDate] = useState(lid && lid?.birth_date);
-  const [created, setCreated] = useState(lid && lid?.created);
-  const [educations, setEducations] = useState(lid && lid?.educations);
-  const [email, setEmail] = useState(lid && lid?.email);
-  const [id, setId] = useState(lid && lid?.id);
-  const [initials, setInitials] = useState(lid && lid?.initials);
-  const [lichting, setLichting] = useState(lid && lid?.lichting);
-  const [lidImage, setLidImage] = useState(lid && lid?.lid_image);
-  const [name, setName] = useState(lid && lid?.name);
-  const [phone, setPhone] = useState(lid && lid?.phone);
-  const [shortIntro, setShortIntro] = useState(lid && lid?.short_intro);
-  const [user, setUser] = useState(lid && lid?.user);
-  const [vertical, setVertical] = useState(lid && lid?.vertical);
+  const { lid, GETLid, PUT } = useContext(LedenContext);
+  const { id } = useParams();
+  useEffect(() => {
+    async function get() {
+      await GETLid(id);
+    }
+    get();
+    // eslint-disable-next-line
+  }, []);
+
+  const { user } = useContext(AuthContext);
+  const [sendBlob, setSendBlob] = useState(false);
+  const [active, setActive] = useState(lid ? lid?.active : true);
+  const [birthDate, setBirthDate] = useState(lid ? lid?.birth_date : "");
+  const [educations, setEducations] = useState(lid ? lid?.educations : "");
+  const [email, setEmail] = useState(lid ? lid?.email : "");
+  const [lidImage, setLidImage] = useState(lid ? lid?.lid_image : null);
+  const [name, setName] = useState(lid ? lid?.name : "");
+  const [phone, setPhone] = useState(lid ? lid?.phone : "");
+  const [shortIntro, setShortIntro] = useState(lid ? lid?.short_intro : "");
+  const navigate = useNavigate(); // onChange={(e) => setActive(e.target.value)}
+  const onSubmit = (e) => {
+    e.preventDefault();
+    PUT(
+      {
+        id,
+        active,
+        birthDate,
+        educations,
+        email,
+        lidImage,
+        name,
+        phone,
+        shortIntro,
+      },
+      sendBlob
+    );
+    navigate(-1);
+  };
+  if (user?.lid_id !== lid?.id) {
+    return (
+      <h3>
+        Naughty Naughty, you cheeky bastard but you can't edit other peoples
+        profiles!!
+      </h3>
+    );
+  }
   return (
     <>
-      <main className="columns">
-        <div className="column is-half is-offset-3">
-          <form>
+      <>
+        <div className="card">
+          <form className="card-content">
             <table>
               <tbody>
                 <tr>
-                  <th>birthDate:</th>
-                  <td className="field">
-                    <input name="birthDate" type="date" />
+                  <th>
+                    <label htmlFor="id_name">Naam:</label>
+                  </th>
+                  <td>
+                    <input
+                      className="input"
+                      name="name"
+                      id="id_name"
+                      onChange={(e) => setName(e.target.value)}
+                      type={"text"}
+                      value={name}
+                    />
                   </td>
                 </tr>
                 <tr>
-                  <th>educations:</th>
-                  <td className="field">
-                    <input name="educations" type="text" />
+                  <th>
+                    <label htmlFor="id_email">Email:</label>
+                  </th>
+                  <td>
+                    <input
+                      className="input"
+                      onChange={(e) => setEmail(e.target.value)}
+                      name="email"
+                      type="email"
+                      value={email}
+                    />
                   </td>
                 </tr>
                 <tr>
-                  email: <input name="email" type="email" />
+                  <th>
+                    <label htmlFor="id_phone">Number:</label>
+                  </th>
+                  <td>
+                    <input
+                      className="input"
+                      onChange={(e) => setPhone(e.target.value)}
+                      id="id_phone"
+                      name="phone"
+                      type="tel"
+                      value={phone}
+                    />
+                  </td>
                 </tr>
                 <tr>
-                  lidImage: <input name="lidImage" type={"img"} />
+                  <th>
+                    <label htmlFor="id_birthDate">Birth Date:</label>
+                  </th>
+                  <td className="field">
+                    <input
+                      className="input"
+                      name="birthDate"
+                      type="date"
+                      value={birthDate}
+                      id="id_birthDate"
+                      onChange={(e) => setBirthDate(e.target.value)}
+                    />
+                  </td>
                 </tr>
                 <tr>
-                  name: <input name="name" type={"text"} />
+                  <th>
+                    <label htmlFor="id_education">Education:</label>
+                  </th>
+                  <td className="field">
+                    <input
+                      className="input"
+                      name="educations"
+                      onChange={(e) => setEducations(e.target.value)}
+                      type="text"
+                      value={educations}
+                    />
+                  </td>
+                </tr>
+
+                <tr>
+                  <th>
+                    <label htmlFor="id_image">Profile Foto:</label>
+                  </th>
+                  <td>
+                    <input
+                      className="input"
+                      id="id_image"
+                      name="lidImage"
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        setLidImage(e.target.files[0]);
+                        setSendBlob(true);
+                      }}
+                    />
+                  </td>
+                </tr>
+
+                <tr>
+                  <th>
+                    <label htmlFor="id_shortIntro">Short Intro:</label>
+                  </th>
+                  <td>
+                    <input
+                      className="input"
+                      id="id_shortIntro"
+                      name="shortIntro"
+                      onChange={(e) => setShortIntro(e.target.value)}
+                      type={"text"}
+                      value={shortIntro}
+                    />
+                  </td>
                 </tr>
                 <tr>
-                  phone: <input name="phone" type="number" />
-                </tr>
-                <tr>
-                  shortIntro: <input name="shortIntro" type={"text"} />
+                  <th>
+                    <label htmlFor="id_active">Active:</label>
+                  </th>
+                  <td className="field">
+                    <input
+                      type="checkbox"
+                      name="active"
+                      checked={active}
+                      className="checkbox"
+                      onChange={(e) => {
+                        setActive(e.target.checked);
+                      }}
+                      id="id_active"
+                    />
+                  </td>
                 </tr>
               </tbody>
             </table>
-
-            <a className="button" type="submit" value="Submit" />
+            <Button value="Submit" color="is-success" onClick={onSubmit}>
+              Submit
+            </Button>
+            <Button value="Submit" color="is-info" onClick={() => navigate(-1)}>
+              Terug
+            </Button>
           </form>
         </div>
-      </main>
+      </>
     </>
   );
 };
 export default AccountForm;
-// {% extends 'main.html' %} {% block content%}
-// <!-- Main Section -->
-// <main className="columns is-centered">
-//   <div className="column is-one-third">
-//     <div className="table is-bordered is-striped is-narrow is-hoverable is-centered is-three-forths">
-
-//       <form className="form" method="POST">
-//         {% csrf_token %}
-//         <table style="width: 100%; border: 1px solid black">
-//           {% comment %} <tr>  {% endcomment %}
-//           {% for field in form %}
-//           <!-- Input:{{field.label}} -->
-//           {% comment %} <td className="form__field"> {% endcomment %}
-//             <label for="formInput#text">{{field.label}}: </label>
-//             {{field}}
-//               {% comment %} </td> {% endcomment %}
-//           {% endfor %}</tr>
-//         </table>
-
-//     </div>
-//     <a className="button" type="submit" value="Submit" />
-//     </form>
-//   </div>
-//   </div>
-// </main>
-// {% endblock content%}

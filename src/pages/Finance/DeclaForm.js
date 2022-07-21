@@ -24,7 +24,8 @@ export const DeclaFrom = () => {
   //   // eslint-disable-next-line
   // }, [id]);
   // eslint-disable-next-line
-  const [decla, setDecla] = useState(declas?.find((de) => de.id === id));
+  const [sendBlob, setSendBlob] = useState(false);
+  const decla = declas?.find((de) => de.id === id);
   const [deleted, setDeleted] = useState(false);
   const [event, setEvent] = useState(decla && decla?.event);
   const [owner, setOwner] = useState(decla ? decla?.owner : user.lid_id);
@@ -89,20 +90,23 @@ export const DeclaFrom = () => {
     // }
     e.preventDefault();
     if (decla) {
-      PUT({
-        id,
-        owner,
-        event,
-        content,
-        total,
-        present,
-        receipt,
-        reunist,
-        kmters,
-        boekstuk,
-        content_ficus,
-        verwerkt,
-      });
+      PUT(
+        {
+          id,
+          owner,
+          event,
+          content,
+          total,
+          present,
+          receipt,
+          reunist,
+          kmters,
+          boekstuk,
+          content_ficus,
+          verwerkt,
+        },
+        sendBlob
+      );
       navigate("/declas");
     } else {
       POST({
@@ -260,6 +264,7 @@ export const DeclaFrom = () => {
                     accept="image/*"
                     onChange={(e) => {
                       setReceipt(e.target.files[0]);
+                      setSendBlob(true);
                     }}
                     className="input"
                     id="id_receipt"

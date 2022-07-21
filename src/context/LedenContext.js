@@ -26,7 +26,7 @@ export default LedenContext;
 export const LedenProvider = ({ children }) => {
   const [leden, setLeden] = useState([]);
   const [lid, setLid] = useState();
-  const { user, ApiRequest } = useContext(ApiContext);
+  const { user, ApiRequest, ApiFileRequest } = useContext(ApiContext);
 
   const getLeden = async () => {
     const { res, data } = await ApiRequest("/api/leden/");
@@ -45,10 +45,34 @@ export const LedenProvider = ({ children }) => {
       console.log("res", res);
     }
   };
+
+  const PUT = async (person, blob) => {
+    const uploadData = new FormData();
+    person.active && uploadData.append("active", person.active);
+    person.birthDate && uploadData.append("birthDate", person.birthDate);
+    person.educations && uploadData.append("educations", person.educations);
+    person.email && uploadData.append("email", person.email);
+    person.name && uploadData.append("name", person.name);
+    person.phone && uploadData.append("phone", person.phone);
+    person.shortIntro && uploadData.append("shortIntro", person.shortIntro);
+    blob &&
+      uploadData.append("lidImage", person.lidImage, person.lidImage.name);
+    const { res, data } = await ApiFileRequest(`/api/leden/${person.id}`, {
+      method: "PUT",
+      body: uploadData,
+    });
+    if (res.status === 200) {
+      console.log("received");
+      setLid(data);
+    } else {
+      console.log("Lid not updated");
+    }
+  };
+
   useEffect(() => {
     async function getit() {
       await getLeden();
-      await GETLid(user.lid_id)
+      await GETLid(user.lid_id);
     }
     if (user) {
       getit();
@@ -60,6 +84,7 @@ export const LedenProvider = ({ children }) => {
     user: user,
     GETLid: GETLid,
     lid: lid,
+    PUT: PUT,
     setLid: setLid,
     leden: leden,
   };

@@ -38,20 +38,23 @@ export const Account = (props) => {
       <main>
         <div className="columns is-centered">
           <div className="column --1of3">
-            <div className="card text-center">
-              <div className="card__body">
+            <div className="card text-center container">
+              <div className="card-image">
+                <figure>
+                  <img src={lid?.lid_image}  alt=''/>
+                </figure>
+              </div>
+              <div className="card-content">
+                <h2>{lid?.name}</h2>
+                <p>{lid?.short_intro}</p>
+
                 {user?.lid_id === lid?.id && (
-                  <Link to={`./edit`}>
-                    <p>Edit</p>
-                  </Link>
+                  <Button>
+                    <Link to={`./edit`}>
+                      <>Edit</>
+                    </Link>
+                  </Button>
                 )}
-                <img
-                  className="avatar avatar--xl dev__avatar"
-                  src={lid?.imageURL}
-                  alt="lid"
-                />
-                <h2 className="dev__name">{lid?.name}</h2>
-                <p className="dev__title">{lid?.short_intro}</p>
               </div>
             </div>
             <div className="card text-center mt-2" style={{ padding: "10px" }}>
@@ -73,6 +76,9 @@ export const Account = (props) => {
                               event={event}
                             />
                           ))}
+                        {!events?.some((event) =>
+                          event?.kokers?.includes(lid?.id)
+                        ) && <p>Je heeft geen Kookshifts</p>}
                       </tbody>
                     </table>
                     {events?.filter((event) => event?.kokers?.includes(lid?.id))
