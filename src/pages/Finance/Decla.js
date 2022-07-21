@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import DeclaContext from "../../context/DeclaContext";
 import LedenContext from "../../context/LedenContext";
 import Button from "../../components/Button";
@@ -8,7 +8,6 @@ import HoverCell from "../../components/HoverCell";
 export const Decla = ({ decla }) => {
   const { user, leden } = useContext(LedenContext);
   let { VERWERK, DELETE, boekstuks } = useContext(DeclaContext);
-  let navigate = useNavigate();
   let styleSummary;
   decla?.event?.summary === "Wedstrijd"
     ? (styleSummary = "red")
@@ -47,16 +46,17 @@ export const Decla = ({ decla }) => {
             <Button color="is-link">Edit</Button>
           </Link>}
         </td>
-        <td style={{ textAlign: "center" }}>
+        
           <HoverCell
             dropText="Image"
+            
             items={
               <a href={decla?.receipt}>
                 <img src={decla?.receipt} alt="receipt" />
               </a>
             }
           />
-        </td>
+        
         <td style={{ textAlign: "center" }}>
           {boekstuks?.find((BS) => BS.id === decla?.boekstuk)?.name}
         </td>

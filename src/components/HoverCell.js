@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-const HoverCell = ({ dropText, items }) => {
+const HoverCell = ({ dropText, style,  items }) => {
   const [show, setShow] = useState(false);
   return (
     <td
       className="dropdown "
-      style={{ display: "table-cell" }}
+      style={ { display: "table-cell" }}
       onMouseEnter={() => setShow(true)}
       onMouseLeave={() => setShow(false)}
       onClick={() => setShow(!show)}

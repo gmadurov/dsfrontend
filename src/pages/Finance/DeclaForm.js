@@ -121,7 +121,7 @@ export const DeclaFrom = () => {
     }
     setDeleted(false);
   };
-  if (user?.lid_id !== decla?.owner &&  !user.roles.includes("Fiscus")) {
+  if (user?.lid_id !== decla?.owner && !user.roles.includes("Fiscus") && id) {
     return (
       <h3>
         Naughty Naughty, you cheeky bastard but you can't edit other peoples

@@ -10,7 +10,7 @@ import Declas from "./pages/Finance/Declas";
 import { default as DeclaForm } from "./pages/Finance/DeclaForm";
 import { default as Dsani } from "./pages/Dsani/Dsani";
 import { default as EventForm } from "./pages/Events/EventForm";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { default as Events } from "./pages/Events/Events";
 // extra imports
 import LoginPage from "./pages/User/Login";
@@ -88,7 +88,7 @@ function App() {
               }
             />
             <Route
-              path="/edit-account/:id"
+              path="/account/:id/edit"
               element={
                 <PrivateRoute>
                   <Page>
@@ -97,7 +97,7 @@ function App() {
                 </PrivateRoute>
               }
             />
-            <Route
+            {/* <Route
               path="/decla"
               element={
                 <PrivateRoute>
@@ -106,7 +106,7 @@ function App() {
                   </Page>
                 </PrivateRoute>
               }
-            />
+            /> */}
             <Route
               path="/decla/:id"
               element={

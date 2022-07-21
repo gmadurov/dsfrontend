@@ -6,13 +6,14 @@ import AuthContext from "./AuthContext";
 //  "https://stropdas.herokuapp.com";
 //  "http://127.0.0.1:8000";
 export const baseUrl = () => {
-  let LOCAL = !true;
+  let LOCAL = true;
   if (LOCAL) {
     return "http://127.0.0.1:8000";
   } else {
     return "https://stropdas.herokuapp.com";
   }
 };
+
 
 // ("https://stropdas2.herokuapp.com/");
 /**### use this instead of fetch

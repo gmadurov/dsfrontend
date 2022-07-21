@@ -41,10 +41,9 @@ export const Account = (props) => {
             <div className="card text-center">
               <div className="card__body">
                 {user?.lid_id === lid?.id && (
-                  <></>
-                  // <Link to={`/edit`}>
-                  //   <p>Edit</p>
-                  // </Link>
+                  <Link to={`./edit`}>
+                    <p>Edit</p>
+                  </Link>
                 )}
                 <img
                   className="avatar avatar--xl dev__avatar"
@@ -60,18 +59,28 @@ export const Account = (props) => {
                 <p>Kookshifts:</p>
                 <div className="card" style={{ padding: "10px" }}>
                   <div className=" table is-4 card__body">
-                    {events
-                      ?.filter((event) => event?.kokers?.includes(lid?.id))
-                      ?.slice(0, collapseEvents ? NumberPerPage : events.lenght)
-                      .map((event) => (
-                        <Event key={"myKookShifts" + event?.id} event={event} />
-                      ))}
+                    <table>
+                      <tbody>
+                        {events
+                          ?.filter((event) => event?.kokers?.includes(lid?.id))
+                          ?.slice(
+                            0,
+                            collapseEvents ? NumberPerPage : events.lenght
+                          )
+                          .map((event) => (
+                            <Event
+                              key={"myKookShifts" + event?.id}
+                              event={event}
+                            />
+                          ))}
+                      </tbody>
+                    </table>
                     {events?.filter((event) => event?.kokers?.includes(lid?.id))
-                      ?.length > 5  && (
+                      ?.length > 5 && (
                       <Button
                         onClick={() => setCollapseEvents(!collapseEvents)}
                       >
-                         Collapse
+                        Collapse
                       </Button>
                     )}
                   </div>
@@ -85,20 +94,22 @@ export const Account = (props) => {
               <div className="column card text-center">
                 Mijn Declas
                 <div className="card" style={{ padding: "10px" }}>
-                  <div className=" table is-4 card__body">
-                    {declas
-                      ?.filter((declaM) => declaM?.owner === lid?.id)
-                      ?.slice(0, MijnDecla ? NumberPerPage : declas.lenght)
-                      .map((declaM) => (
-                        <Decla decla={declaM} key={"mydecla" + declaM?.id} />
-                      ))}
-                    {declas?.filter((declaM) => declaM?.owner === lid?.id)
-                      .length > 5 && (
-                      <Button onClick={() => setMijnDecla(!MijnDecla)}>
-                        Collapse
-                      </Button>
-                    )}
-                  </div>
+                  <table className=" table is-4 card__body">
+                    <tbody>
+                      {declas
+                        ?.filter((declaM) => declaM?.owner === lid?.id)
+                        ?.slice(0, MijnDecla ? NumberPerPage : declas.lenght)
+                        .map((declaM) => (
+                          <Decla decla={declaM} key={"mydecla" + declaM?.id} />
+                        ))}
+                    </tbody>
+                  </table>
+                  {declas?.filter((declaM) => declaM?.owner === lid?.id)
+                    .length > 5 && (
+                    <Button onClick={() => setMijnDecla(!MijnDecla)}>
+                      Collapse
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>
@@ -107,12 +118,24 @@ export const Account = (props) => {
                 Declas op mij
                 <div className="card" style={{ padding: "10px" }}>
                   <div className=" table is-4 card__body">
-                    {declas
-                      ?.filter((declaM) => declaM?.present.includes(lid?.id))
-                      ?.slice(0, DeclasOpMij ? NumberPerPage : declas.lenght)
-                      ?.map((declaM) => (
-                        <Decla decla={declaM} key={"mydecla" + declaM?.id} />
-                      ))}
+                    <table>
+                      <tbody>
+                        {declas
+                          ?.filter((declaM) =>
+                            declaM?.present.includes(lid?.id)
+                          )
+                          ?.slice(
+                            0,
+                            DeclasOpMij ? NumberPerPage : declas.lenght
+                          )
+                          ?.map((declaM) => (
+                            <Decla
+                              decla={declaM}
+                              key={"mydecla" + declaM?.id}
+                            />
+                          ))}
+                      </tbody>
+                    </table>
 
                     {declas?.filter((declaM) =>
                       declaM?.present.includes(lid?.id)

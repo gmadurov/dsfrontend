@@ -3,9 +3,11 @@ import React, { useContext, useState } from "react";
 
 import { Link } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
+import LedenContext from "../context/LedenContext";
 
 const NavBar = () => {
   const { user, logoutFunc } = useContext(AuthContext);
+  const {lid} = useContext(LedenContext);
   const [burger, setBurger] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   if (!user) {
@@ -76,7 +78,7 @@ const NavBar = () => {
             onMouseLeave={() => setShowDropdown(false)}
             onClick={() => setShowDropdown(!showDropdown)}
           >
-            <p className="navbar-link">Hello, {user?.name} </p>
+            <p className="navbar-link"> {user?.name} €{lid?.stand.amount}</p>
             <div
               className="navbar-dropdown"
               style={{ display: showDropdown ? "block" : "none" }}
