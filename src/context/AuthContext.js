@@ -39,7 +39,9 @@ export const AuthProvider = ({ children }) => {
       localStorage.getItem("user") &&
       jwt_decode(JSON.parse(localStorage.getItem("user")))
   );
-
+  const start = async () => {
+    await fetch(`${baseUrl()}`);
+  };
   const navigate = useNavigate();
   const loginFunc = async (username, password) => {
     let res = await fetch(`${baseUrl()}/api/users/token/`, {
@@ -77,6 +79,7 @@ export const AuthProvider = ({ children }) => {
     setUser: setUser,
     user: user,
     authTokens: authTokens,
+    start: start,
   };
   // user && navigate("../login", { replace: true });
   return <AuthContext.Provider value={data}>{children}</AuthContext.Provider>;

@@ -1,12 +1,19 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import AuthContext from "../../context/AuthContext";
 import Page from "../../utils/Page";
 
 export const LoginPage = () => {
-  const { user, loginFunc } = useContext(AuthContext);
+  const { start, user, loginFunc } = useContext(AuthContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  useEffect(() => {
+    async function get() {
+      await start();
+    }
+    get()
+  }, []);
+
   const logMeIn = (e) => {
     e.preventDefault();
     loginFunc(username, password);

@@ -1,19 +1,20 @@
 import jwt_decode from "jwt-decode";
 import dayjs from "dayjs";
-import { createContext, useContext } from "react";
+import { createContext, useContext, useEffect } from "react";
 import AuthContext from "./AuthContext";
 
 //  "https://stropdas.herokuapp.com";
 //  "http://127.0.0.1:8000";
 export const baseUrl = () => {
-  let LOCAL = true;
+  let LOCAL = !true;
+  let url;
   if (LOCAL) {
-    return "http://127.0.0.1:8000";
+    url = "http://127.0.0.1:8000";
   } else {
-    return "https://stropdas.herokuapp.com";
+    url = "https://stropdas3.herokuapp.com";
   }
+  return url;
 };
-
 
 // ("https://stropdas2.herokuapp.com/");
 /**### use this instead of fetch
@@ -74,7 +75,7 @@ export const ApiProvider = ({ children }) => {
       dayjs.unix(authTokens?.refresh?.exp).diff(dayjs(), "minute") < 1;
     const isExpired = dayjs.unix(user?.exp).diff(dayjs(), "minute") < 1;
     if (isExpiredRefresh) {
-      console.log('refresh token is expired, you were logged out');
+      console.log("refresh token is expired, you were logged out");
       logoutFunc();
     } else {
       // refreshToken(authTokens);
@@ -117,6 +118,15 @@ export const ApiProvider = ({ children }) => {
 
     // console.log("input", url);
   };
+  useEffect(() => {
+    const get = async () => {
+      await originalRequest();
+      console.log("connected ");
+    };
+
+    get();
+  }, []);
+
   const value_dic = {
     user: user,
     ApiRequest: ApiRequest,
